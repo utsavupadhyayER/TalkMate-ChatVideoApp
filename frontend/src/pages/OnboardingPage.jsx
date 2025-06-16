@@ -1,14 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router"; // ADD THIS IMPORT
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { completeOnboarding } from "../lib/api";
-import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
+import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon, CameraIcon } from "lucide-react"; // Added CameraIcon
 import { LANGUAGES } from "../constants";
 
 const OnboardingPage = () => {
   const { authUser } = useAuthUser();
   const queryClient = useQueryClient();
+  const navigate = useNavigate(); // ADD THIS LINE
 
   const [formState, setFormState] = useState({
     fullName: authUser?.fullName || "",
@@ -24,6 +26,7 @@ const OnboardingPage = () => {
     onSuccess: () => {
       toast.success("Profile onboarded successfully");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      navigate("/"); // ADD THIS LINE - REDIRECTS TO HOMEPAGE
     },
 
     onError: (error) => {
@@ -33,7 +36,6 @@ const OnboardingPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     onboardingMutation(formState);
   };
 
@@ -169,7 +171,6 @@ const OnboardingPage = () => {
             </div>
 
             {/* SUBMIT BUTTON */}
-
             <button className="btn btn-primary w-full" disabled={isPending} type="submit">
               {!isPending ? (
                 <>
@@ -189,5 +190,5 @@ const OnboardingPage = () => {
     </div>
   );
 };
-export default OnboardingPage;
 
+export default OnboardingPage;
